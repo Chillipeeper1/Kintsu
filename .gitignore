@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.idea/
+
+# generated data artifacts
+data/faiss_index/*
+!data/faiss_index/.gitkeep
