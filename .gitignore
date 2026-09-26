@@ -10,7 +10,4 @@ data/faiss_index/*
 !data/faiss_index/.gitkeep
 
 #images
-
-
-
-src/clothing_images/
+clothing_images/

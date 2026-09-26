@@ -1,0 +1,16 @@
+[project]
+name = "kintsu"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "einops>=0.8.2",
+    "fastapi[standard]>=0.141.1",
+    "pillow>=12.3.0",
+    "qdrant-client>=1.19.1",
+    "requests>=2.34.2",
+    "sentence-transformers==4.1.0",
+    "timm>=1.0.30",
+    "torch>=2.14.0",
+    "torchvision>=0.29.0",
+    "transformers==4.50.0",
+]
