@@ -1,12 +1,11 @@
 """
 Multimodal embedding model for image search engine
 
-source = https://www.youtube.com/watch?v=6chRtu94NTY
+reference = https://www.youtube.com/watch?v=6chRtu94NTY
 
 The clothing images dataset is available on https://huggingface.co/datasets/ashraq/fashion-product-images-small
+
 """
-
-
 import os
 import random
 import uuid
@@ -30,26 +29,27 @@ model = SentenceTransformer(
 if not os.path.exists("image_store"):
     client = QdrantClient(host="localhost", port=6333)
 
-    images = [os.path.join("", f) for f in os.listdir("clothing_images")]
+    images = [os.path.join("", f) for f in os.listdir("clothing_images")] #clothing images dataset directory
 
-    # Here we are about to process 15k images, I hope the 128 batching will not destroy my pc
+    # Here we are about to process 5k images, I hope the 32 batching will not destroy my pc
     # I know I could reduce the number of images to a much more tiny number but for experimental proposes I'm going to scan the whole thing
 
-    embeddings = [model.encode(img, normalize_embeddings=True, batch_size=128, device=device) for img in images]
+    embeddings = [model.encode(img, normalize_embeddings=True, batch_size=32, device=device) for img in images]
 
     client.create_collection(
         collection_name="images",
         vectors_config=VectorParams(size=len(embeddings[0]), distance=Distance.COSINE )
     )
-    client.upsert(
+    client.upload_points(
         collection_name="images",
         points=[
             PointStruct(id=uuid.uuid4(), vector=embeddings[i], payload={"path":images[i]})
             for i in range(len(images))
-        ]
+        ] ,
+        batch_size=100
     )
 else:
-    client = QdrantClient(path="image_store")
+    client = QdrantClient(host="localhost", port=6333)
 print(embeddings[0])
 print("DONE ur pc survived")
 search_query = input("Enter query: ")
