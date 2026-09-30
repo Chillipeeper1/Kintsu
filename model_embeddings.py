@@ -19,7 +19,9 @@ from qdrant_client.models import VectorParams, Distance, PointStruct
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-images = [os.path.join("", f) for f in os.listdir("clothing_images")]
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(BASE_DIR, "clothing_images")
+images = [os.path.join(IMAGES_DIR, f) for f in os.listdir(IMAGES_DIR)]
 
 model = None
 embeddings = None
@@ -43,8 +45,9 @@ def load_model():
 def load_embeddings():
     global embeddings
     if embeddings is None:
-
-        embeddings = [model.encode(img, normalize_embeddings=True, batch_size=32, device=device) for img in images]
+        warnings.warn("Embeddings creation started", UserWarning)
+        embeddings = model.encode(images, batch_size=64, normalize_embeddings=True, show_progress_bar=True)
+        warnings.warn("Embeddings finisehd")
     else:
         warnings.warn("Embeddings already loaded", UserWarning)
 
