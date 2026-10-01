@@ -1,24 +1,29 @@
-import os
-from fastapi import FastAPI
-import torch
-from sentence_transformers import SentenceTransformer
-from model_embeddings import load_model, load_embeddings, client_creation, search_object
 
-app = FastAPI()
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from model_embeddings import load_model, client_creation, search_object
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_model()
+    client_creation()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+app.mount("/images", StaticFiles(directory="clothing_images"), name="images")
+
 
 @app.get("/")
 def home():
-    # first time calling
-    load_model()
-    load_embeddings()
-    client_creation()
-    return {"message":"Services Running"}
+    file_path = "static/index.html"
+    return FileResponse(file_path)
+
 
 @app.get("/search-query")
-def search_query():
-    results = search_object("black pants")
-    return {"result":results}
-
-
-
-
+def search_query(q: str):
+    results = search_object(q)
+    return {"result": results}

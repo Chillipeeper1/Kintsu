@@ -1,0 +1,45 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Image search</title>
+    </head>
+
+    <body>
+    <p>Image search </p>
+    <label>
+        <input type="text" name="text-query" id="query">
+    </label>
+    <button type="button" id="search-btn">send</button>
+    <div id="results">
+
+    </div>
+    <script>
+        const button = document.getElementById("search-btn")
+        let input = document.getElementById("query")
+        const container = document.getElementById("results")
+
+        async function search() {
+
+           try{
+               const response = await fetch("/search-query?q=" + encodeURIComponent(input.value))
+               if(!response.ok) throw new Error("Something went baaad")
+
+               const data = await response.json();
+               container.innerHTML = '';
+               data.result.forEach(item => {
+                   let img = document.createElement("img")
+                   img.src = "/images/" + item.payload.path
+                   container.appendChild(img)
+               })
+
+           } catch (error) {
+               console.log("Error:" , error)
+           }
+        }
+
+        button.addEventListener("click", function() {
+            search()
+        });
+    </script>
+    </body>
+</html>

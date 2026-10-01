@@ -11,3 +11,6 @@ data/faiss_index/*
 
 #images
 clothing_images/
+
+# cached image embeddings
+embeddings.npy

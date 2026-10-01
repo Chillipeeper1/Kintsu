@@ -29,4 +29,4 @@ docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 FastAPI
 ````terminaloutput
 uv sync #only the first time 
-uv run fastapi dev main.py 
+uv run fastapi dev main.py
